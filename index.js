@@ -1,16 +1,30 @@
 require('dotenv').config()
 const express = require('express')
+const cors = require('cors')
 
 const server = express()
 
+const port = process.env.PORT || 9000
+
 server.use(express.json())
+server.use(cors())
 
 server.get('/hello', (req, res) => {
-    res.json('Hello There')
+    res.json({ message: 'Hello from api'})
 })
 
-const port = process.env.PORT
+server.use('*', (req, res) => {
+    res.send(`<h1>Hi!<h1>`)
+})
+
+server.use((err, req, res, next) => { // eslint-disable-line
+    res.status(500).json({
+        message: err.message,
+        stack: err.stack
+    })
+})
 
 server.listen(port, () => {
     console.log(`listening on port ${port}`);
 })
+
